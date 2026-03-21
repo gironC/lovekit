@@ -12,6 +12,8 @@ Camara.new = function(vW, vH)
   self.offsetY = 0
   self.smooth = false
   self.target = nil
+  self.mouseX = 0
+  self.mouseY = 0
   return self
 end
 
@@ -41,6 +43,29 @@ function Camara:update(dt)
     self.x = self.x + (tx - self.x) * 5 * dt
     self.y = self.y + (ty - self.y) * 5 * dt
   end
+  local mx, my = love.mouse.getPosition()
+  mx = mx - self.offsetX
+  my = my - self.offsetY
+  if mx < 0 or my < 0 or
+    mx > self.vW * self.escala or
+    my > self.vH * self.escala then
+    self.mouseX = 0
+    self.mouseY = 0
+    return
+  end
+  mx = mx / self.escala
+  my = my / self.escala
+  if self.target then
+    if self.smooth then
+      mx = mx + self.x - self.vW / 2
+      my = my + self.y - self.vH / 2
+    else
+      mx = mx + self.target.x - self.vW / 2
+      my = my + self.target.y - self.vH / 2
+    end
+  end
+  self.mouseX = math.floor(mx)
+  self.mouseY = math.floor(my)
 end
 
 function Camara:push()
