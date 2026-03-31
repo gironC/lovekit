@@ -1,4 +1,4 @@
-Camera = {}
+local Camera = {}
 Camera.__index = Camera
 
 Camera.new = function(vW, vH)
@@ -7,7 +7,7 @@ Camera.new = function(vW, vH)
   self.vH = vH
   self.x = 0
   self.y = 0
-  self.escala = 1
+  self.scale = 1
   self.offsetX = 0
   self.offsetY = 0
   self.smooth = false
@@ -31,9 +31,9 @@ function Camera:resize(w, h)
   --esto se va a ejecutar en el love.resize
   local scaleX = w / self.vW
   local scaleY = h / self.vH
-  self.escala =math.min(scaleX, scaleY)
-  self.offsetX = (w - self.vW * self.escala) / 2
-  self.offsetY = (h - self.vH * self.escala) / 2
+  self.scale =math.min(scaleX, scaleY)
+  self.offsetX = (w - self.vW * self.scale) / 2
+  self.offsetY = (h - self.vH * self.scale) / 2
 end
 
 function Camera:update(dt)
@@ -47,14 +47,14 @@ function Camera:update(dt)
   mx = mx - self.offsetX
   my = my - self.offsetY
   if mx < 0 or my < 0 or
-    mx > self.vW * self.escala or
-    my > self.vH * self.escala then
+    mx > self.vW * self.scale or
+    my > self.vH * self.scale then
     self.mouseX = 0
     self.mouseY = 0
     return
   end
-  mx = mx / self.escala
-  my = my / self.escala
+  mx = mx / self.scale
+  my = my / self.scale
   if self.target then
     if self.smooth then
       mx = mx + self.x - self.vW / 2
@@ -71,9 +71,9 @@ end
 function Camera:push()
   love.graphics.clear(0, 0, 0)
   love.graphics.push()
-  love.graphics.setScissor(self.offsetX, self.offsetY, self.vW * self.escala, self.vH * self.escala)
+  love.graphics.setScissor(self.offsetX, self.offsetY, self.vW * self.scale, self.vH * self.scale)
   love.graphics.translate(self.offsetX, self.offsetY)
-  love.graphics.scale(self.escala, self.escala)
+  love.graphics.scale(self.scale, self.scale)
 
   if self.target then
     if self.smooth then
@@ -88,3 +88,5 @@ function Camera:pop()
   love.graphics.setScissor()
   love.graphics.pop()
 end
+
+return Camera

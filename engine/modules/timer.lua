@@ -1,4 +1,4 @@
-Timer = {}
+local Timer = {}
 Timer.__index = Timer
 
 Timer.new = function()
@@ -118,3 +118,5 @@ function Timer:_find(id)
   end
   return nil
 end
+
+return Timer
