@@ -7,7 +7,10 @@ StateManager.new = function()
   return self
 end
 
+
 function StateManager:change(name)
+  if self.current.leave then self.current:leave() end
+  
   local scene = require('game.scenes.' .. name)
   self.current = scene
 
