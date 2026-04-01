@@ -1,7 +1,7 @@
-local stateManager = require('engine.core.statemanager')
-local camera = require('engine.modules.camera')
-local timer = require('engine.modules.timer')
-local sprites = require('engine.modules.sprites')
+local stateManager = require('lovekit.core.statemanager')
+local camera = require('lovekit.modules.camera')
+local timer = require('lovekit.modules.timer')
+local sprites = require('lovekit.modules.sprites')
 
 local LoveKey = {}
 
@@ -10,7 +10,6 @@ function LoveKey:start(vWidth, vHeight)
   self.camera = camera.new(vWidth, vHeight)
   self.camera:resize(love.graphics.getWidth(), love.graphics.getHeight())
   self.timer = timer.new()
-  self.state:change('title')
 end
 
 function LoveKey:update(dt)
