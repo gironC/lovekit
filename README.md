@@ -34,7 +34,7 @@ lovec .
 ### 3. Project structure
 
 ```
-engine/        → core of LöveKit
+lovekit/        → core of LöveKit
 game/
   scenes/      → your scenes
   assets/      → images, audio, etc.
