@@ -1,7 +1,7 @@
 local Sprites = {}
 Sprites.__index = Sprites
 
-Sprites.new = function(img, rows, cols, width, height, animList)
+function Sprites:new(img, rows, cols, width, height, animList)
   local self = setmetatable({}, Sprites)
   self.img = img
   self.rows = rows
@@ -72,7 +72,7 @@ function findNext(lista, name)
   return 0
 end
 
-function Sprites:draw(x, y, r, sx, sy, pX, pY)
+function Sprites:draw(x, y, r, sx, sy, px, py)
   --[[
     x,y coordenadas de dibujo
     r rotacion (radianes)
@@ -91,7 +91,7 @@ function Sprites:draw(x, y, r, sx, sy, pX, pY)
   px = px or 0
   py = py or 0
   local quad = self.quads[self.currentAnim][self.frame]
-  love.graphics.draw(self.img, quad, x, y, r, sx, sy, pX, pY)
+  love.graphics.draw(self.img, quad, x, y, r, sx, sy, px, py)
 end
 
 return Sprites

@@ -212,9 +212,11 @@ LöveKit provides a simple sprite system for handling sprite sheets and animatio
 ## Create a sprite
 
 ```lua
+local Sprites = require('lovekit.modules.sprites')
+
 local img = e.assets.image("player")
 
-local sprite = Sprites.new(
+local sprite = Sprites:new(
   img,
   2,      -- rows
   4,      -- cols

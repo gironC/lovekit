@@ -1,7 +1,6 @@
 local stateManager = require('lovekit.core.statemanager')
 local camera = require('lovekit.modules.camera')
 local timer = require('lovekit.modules.timer')
-local sprites = require('lovekit.modules.sprites')
 
 local LoveKey = {}
 
