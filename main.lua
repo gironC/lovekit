@@ -12,11 +12,14 @@ function love.load()
     height = 450})
   --add assets example
   e.assets.loadImage('title', 'title.png')
+  --input manager example
   e.input.bind('example', {'a', 'A', 'left'})
+  --find game/scenes/title.lua file to load that scene
   e.state:change('title')
 end
 
 function love.update(dt)
+  --use the update function in the current scene
   e:update(dt)
 end
 
