@@ -7,13 +7,13 @@ function love.load()
     the name must match with the file name, in this case the first scene
     is Title scene, wich is saved in game/scenes/title.lua
   ]]--
-  e:start({width = 800, height = 450})
+  e:start({width = 800, height = 450, transition = 'fade', transitionDuration = 0.3})
   --add assets example
   e.assets.loadImage('title', 'title.png')
   --input manager example
   e.input.bind('example', {'a', 'A', 'left'})
   --find game/scenes/title.lua file to load that scene
-  e.state:change('title')
+  e.state:setFirstScene('title')
 end
 
 function love.update(dt)

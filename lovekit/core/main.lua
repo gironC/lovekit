@@ -1,15 +1,18 @@
 local stateManager = require('lovekit.core.statemanager')
+local transition = require('lovekit.core.transitionmanager')
 local camera = require('lovekit.modules.camera')
 local timer = require('lovekit.modules.timer')
 
 local LoveKey = {}
 
 function LoveKey:start(props)
-  if props then
-    self.vWidth = props.width or 800
-    self.vHeight = props.height or 600
-  end
-  self.state = stateManager.new()
+  props = props or {}
+  --default resolution to 800 x 600
+  self.vWidth = props.width or 800
+  self.vHeight = props.height or 600
+  local transition = props.transition or 'none'
+  local transitionDuration = props.transitionDuration or 0
+  self.state = stateManager.new(transition, transitionDuration)
   self.camera = camera.new(self.vWidth, self.vHeight)
   self.camera:resize(love.graphics.getWidth(), love.graphics.getHeight())
   self.timer = timer.new()
@@ -45,9 +48,15 @@ function LoveKey:mousereleased(x, y, button, istouch, presses)
 end
 
 function LoveKey:draw()
+  love.graphics.clear(0, 0, 0)
+  love.graphics.setColor(1, 1, 1, 1)
   self.camera:push()
   self.state:draw()
   self.camera:pop()
+  self.camera:screenPush()
+  self.state:drawUI()
+  self.state:drawTransition(self.camera:getDimensions())
+  self.camera:screenPop()
 end
 
 function LoveKey:resize(w, h)

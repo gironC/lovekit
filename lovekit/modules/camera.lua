@@ -84,7 +84,6 @@ function Camera:update(dt)
 end
 
 function Camera:push()
-  love.graphics.clear(0, 0, 0)
   love.graphics.push()
   love.graphics.setScissor(self.offsetX, self.offsetY, self.vW * self.scale, self.vH * self.scale)
   love.graphics.translate(self.offsetX, self.offsetY)
@@ -92,14 +91,26 @@ function Camera:push()
 
   if self.target then
     if self.smooth then
-      love.graphics.translate(-self.x + self.vW / 2, -self.y + self.vH / 2)
+      love.graphics.translate(-math.floor(self.x) + self.vW / 2, -math.floor(self.y) + self.vH / 2)
     else
-      love.graphics.translate(-self.target.x + self.vW / 2, -self.target.y + self.vH / 2)
+      love.graphics.translate(-math.floor(self.target.x) + self.vW / 2, -math.floor(self.target.y) + self.vH / 2)
     end
   end
 end
 
 function Camera:pop()
+  love.graphics.setScissor()
+  love.graphics.pop()
+end
+
+function Camera:screenPush()
+  love.graphics.push()
+  love.graphics.setScissor(self.offsetX, self.offsetY, self.vW * self.scale, self.vH * self.scale)
+  love.graphics.translate(self.offsetX, self.offsetY)
+  love.graphics.scale(self.scale, self.scale)
+end
+
+function Camera:screenPop()
   love.graphics.setScissor()
   love.graphics.pop()
 end
