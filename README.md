@@ -310,19 +310,6 @@ Each animation is defined as:
 
 ---
 
-# 🧩 Philosophy
-
-LöveKit follows a simple idea:
-
-> **Structure over complexity**
-
-- Opinionated but flexible  
-- Minimal setup  
-- Clear architecture  
-- Easy to scale  
-
----
-
 # 📌 Notes
 
 - Use `game/` for your game code  
