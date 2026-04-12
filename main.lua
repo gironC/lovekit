@@ -7,9 +7,7 @@ function love.load()
     the name must match with the file name, in this case the first scene
     is Title scene, wich is saved in game/scenes/title.lua
   ]]--
-  e:start({
-    width = 800,
-    height = 450})
+  e:start({width = 800, height = 450})
   --add assets example
   e.assets.loadImage('title', 'title.png')
   --input manager example
@@ -19,7 +17,7 @@ function love.load()
 end
 
 function love.update(dt)
-  --use the update function in the current scene
+  --use the update function in the current scene, this apply for other love. functions
   e:update(dt)
 end
 
