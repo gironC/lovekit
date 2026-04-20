@@ -7,7 +7,19 @@ function love.load()
     the name must match with the file name, in this case the first scene
     is Title scene, wich is saved in game/scenes/title.lua
   ]]--
-  e:start({width = 800, height = 450, transition = 'fade', transitionDuration = 0.3})
+  
+  --initialize lovekit
+  e:start({
+    width = 400,
+    height = 300,
+    transition = {
+      mode = 'anim',
+      duration = .4,
+      imageName = 'transitionanim', --in this case, the id will be 'transition'
+      imageType = '.png', -- the image will be transition.png, using the id given in image
+      frames = 8
+    }
+  })
   --add assets example
   e.assets.loadImage('title', 'title.png')
   --input manager example

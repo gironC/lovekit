@@ -1,10 +1,10 @@
 local StateManager = {}
 StateManager.__index = StateManager
 
-StateManager.new = function(transition, duration)
+StateManager.new = function(transitionProps)
   local self = setmetatable({}, StateManager)
   self.current = nil
-  self.transition = require('lovekit.core.transitionmanager').new(transition,duration)
+  self.transition = require('lovekit.core.transitionmanager').new(transitionProps)
   self.next = ''
   return self
 end
@@ -40,8 +40,8 @@ function StateManager:changeScene()
   end
 end
 
-function StateManager:update(dt)
-  self.transition:update(dt)
+function StateManager:update(dt, camera)
+  self.transition:update(dt, camera)
   if self.transition.state == 2 then
     self:changeScene()
   end

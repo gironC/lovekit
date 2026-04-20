@@ -7,6 +7,8 @@ Assets.videos = {}
 
 --imagenes
 function Assets.loadImage(id, name)
+  print(id)
+  print('name' .. name)
   Assets.images[id] = love.graphics.newImage('game/assets/' .. name)
 end
 

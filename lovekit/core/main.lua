@@ -7,24 +7,34 @@ local LoveKit = {}
 
 function LoveKit:start(props)
   props = props or {}
-  --default resolution to 800 x 600
-  self.vWidth = props.width or 800
-  self.vHeight = props.height or 600
-  local transition = props.transition or 'none'
-  local transitionDuration = props.transitionDuration or 0
-  self.state = stateManager.new(transition, transitionDuration)
-  self.camera = camera.new(self.vWidth, self.vHeight)
-  self.camera:resize(love.graphics.getWidth(), love.graphics.getHeight())
-  self.timer = timer.new()
+
   self.collider = require('lovekit.modules.collision') 
   self.assets = require('lovekit.modules.assets')
   self.input = require('lovekit.modules.inputmanager')
+  --default resolution to 800 x 600
+  self.vWidth = props.width or 800
+  self.vHeight = props.height or 600
+  self.camera = camera.new(self.vWidth, self.vHeight)
+  self.camera:resize(love.graphics.getWidth(), love.graphics.getHeight())
+  local transition = props.transition or {mode = 'none'}
+  if transition.imageName and transition.imageType then
+    local file = transition.imageName .. transition.imageType
+    local id = transition.imageName
+    self.assets.loadImage(id, file)
+    transition.img = self.assets.image(id)
+  end
+  if transition.mode == 'anim' then
+    transition.w = self.vWidth
+    transition.h = self.vHeight
+  end
+  self.state = stateManager.new(transition)
+  self.timer = timer.new()
 end
 
 function LoveKit:update(dt)
-  self.state:update(dt)
   self.camera:update(dt)
   self.timer:update(dt)
+  self.state:update(dt, self.camera)
   self.input.keysPressed = {}
   self.input.keysReleased = {}
 end
