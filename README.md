@@ -5,16 +5,24 @@
 LöveKit is a lightweight framework built on top of LÖVE that helps you structure your game with a clean architecture, without getting in your way.
 
 ---
+# ✨ Features
+
+- Scene system
+- Virtual resolution camera
+- Input manager
+- Asset manager
+- Timer utilities
+- Sprite animations
+- Scene transitions
+- CLI generators
+
+---
 
 # 🚀 Getting Started
 
 ### 1. Create a new project
 
-Use this repository as a template or clone it:
-
-```bash
-git clone https://github.com/gironC/lovekit
-```
+Use this repository as a template.
 
 ---
 
@@ -29,6 +37,8 @@ or with console
 lovec .
 ```
 
+or just create your .zip or .love file to open with löve manually
+
 ---
 
 ### 3. Project structure
@@ -37,8 +47,10 @@ lovec .
 lovekit/        → core of LöveKit
 game/
   scenes/      → your scenes
+  entities/    → your entities like player, enemy, etc.
   assets/      → images, audio, etc.
 main.lua       → entry point
+conf.lua       → Löve configuration file
 ```
 
 ---
@@ -67,6 +79,12 @@ function Title:draw()
   love.graphics.print("Hello LöveKit", 10, 10)
 end
 
+function Title:mousepressed(x, y, button, istouch, presses)
+  if button == 2 then
+    e.state:change("game")
+  end
+end
+
 return Title
 ```
 
@@ -76,14 +94,19 @@ return Title
 
 ```lua
 function love.load()
-  e:start(800, 450)
-  e.state:change("title")
+  e:start({
+    width = 800,
+    height = 450
+  })
+  e.state:setFirstScene('title')
 end
 ```
 
 ---
 
-# 🎮 Scenes
+# 🧩 Core components
+
+## 🎮 Scenes
 
 Each scene can implement:
 
@@ -105,11 +128,11 @@ function Scene:mousereleased(x, y, button, istouch, presses) end
 
 ---
 
-# 🎹 Input
+## 🎹 Input
 
 LöveKit provides an input manager.
 
-## Recommended usage:
+### Recommended usage:
 
 ```lua
 function Scene:update(dt)
@@ -119,22 +142,20 @@ function Scene:update(dt)
 end
 ```
 
-## Bindings
+### Bindings
 
 ```lua
-e.input.bindings = {
-  jump = {"space", "w"}
-}
+e.input.bind('jump', {'w', 'W', 'space'})
 ```
 
-## Notes
+### Notes
 
 - Use `e.input` for gameplay logic  
 - You can still use `scene:keypressed` if needed  
 
 ---
 
-# 🖼️ Assets
+## 🖼️ Assets
 
 All assets must be inside:
 
@@ -142,42 +163,51 @@ All assets must be inside:
 game/assets/
 ```
 
-## Load assets
+### Load assets
 
 ```lua
-e.assets.loadImage("player", "imgs/player.png")
+e.assets.loadImage("player", "imgs/player.png") --for images
+e.assets.loadAudio('jump', 'jump.wav', 'static') --for audios
 ```
 
-## Use assets
+### Use assets
 
 ```lua
 local img = e.assets.image("player")
 love.graphics.draw(img, x, y)
+
+local jump = e.assets.audio('jump')
+jump.play()
 ```
+
 
 ---
 
-# 🎥 Camera
+## 🎥 Camera
 
 LöveKit uses a **virtual resolution system**.
 
-## Setup
+### Setup
 
 ```lua
-e:start(800, 450)
+e:start({
+  width = 800,
+  height = 450
+})
 ```
 
-## Usage
+This will be the virtual resolution, it will adapt to the real window size.
+
+### Usage
+
+Everything drawn inside a scene `:draw()` is rendered through the camera automatically. Also You can configure a target to follow with:
 
 ```lua
-e.camera:push()
-
--- draw your game here
-
-e.camera:pop()
+e.camera:setTarget(player) --player needs to be an entity
+e.camera:setSmooth(true, .5) --set false if you want to deactivate smooth, the .5 is the time
 ```
 
-## Features
+### Features
 
 - automatic scaling  
 - aspect ratio preservation  
@@ -186,7 +216,7 @@ e.camera:pop()
 
 ---
 
-# ⏱️ Timer
+## ⏱️ Timer
 
 Example:
 
@@ -196,20 +226,20 @@ e.timer:every("example", 1, function()
 end)
 ```
 
-## Notes
+### Notes
 
 - Uses IDs to prevent duplication  
 - Safe to call multiple times  
 
 ---
 
-# 🎞️ Sprites
+## 🎞️ Sprites
 
 LöveKit provides a simple sprite system for handling sprite sheets and animations.
 
 ---
 
-## Create a sprite
+### Create a sprite
 
 ```lua
 local Sprites = require('lovekit.modules.sprites')
@@ -229,9 +259,8 @@ local sprite = Sprites:new(
 )
 ```
 
----
 
-## Update sprite
+### Update sprite
 
 ```lua
 sprite:update(dt)
@@ -240,15 +269,15 @@ sprite:update(dt)
 - Handles frame changes automatically  
 - Uses `delay` to control animation speed  
 
----
 
-## Draw sprite
+
+### Draw sprite
 
 ```lua
 sprite:draw(x, y)
 ```
 
-### Advanced usage:
+Advanced usage:
 
 ```lua
 sprite:draw(x, y, r, sx, sy, px, py)
@@ -261,25 +290,20 @@ Parameters:
 - `sx, sy` → scale (use `-1` to flip)  
 - `px, py` → origin offset  
 
----
 
-## Change animation
+### Change animation
 
 ```lua
 sprite:change("run")
 ```
 
----
-
-## Reset animation
+### Reset animation
 
 ```lua
 sprite:reset()
 ```
 
----
-
-## Animation structure
+### Animation structure
 
 Each animation is defined as:
 
@@ -299,9 +323,8 @@ Each animation is defined as:
 - `loop` → should repeat  
 - `nextAnim` → next animation if not looping  
 
----
 
-## Notes
+### Notes
 
 - Sprite sheets are divided automatically into quads  
 - Animations are row-based  
@@ -310,10 +333,128 @@ Each animation is defined as:
 
 ---
 
-# 📌 Notes
+## 🎬 Scene Transitions
+
+Transitions are configured when starting the engine.
+
+### Basic example
+
+Configure transitions inside `:start()`.
+
+```lua
+e:start({
+  width = 400,
+  height = 300,
+  transition = {
+    mode = "fade",
+    duration = 0.4
+  }
+})
+```
+
+### Disable transitions
+
+```lua
+e:start({
+  width = 400,
+  height = 300,
+  transition = {
+    mode = "none",
+  }
+})
+```
+
+Or simply omit the `transition` config.
+
+### Transition Types
+
+- `none`
+- `fade`
+- `slideR`
+- `slideL`
+- `anim`
+
+`fade`, `slideR` and `slideL` can use an image instead of a black screen:
+
+```lua
+e:start({
+  width = 400,
+  height = 300,
+  transition = {
+    mode = "fade",
+    duration = 0.4,
+    imageName = "wipe",
+    imageType = ".png"
+  }
+})
+```
+
+`anim` uses a spritesheet-based transition.
+The first row of the frames are used for the transition in, and the second row for the transition out.
+
+```lua
+e:start({
+  width = 400,
+  height = 300,
+  transition = {
+    mode = "anim",
+    duration = 0.4,
+    imageName = "wipe",
+    imageType = ".png",
+    frames = 4
+  }
+})
+```
+
+---
+
+# 🛠️ CLI
+LöveKit includes a small CLI to generate common files quickly.
+
+Use it from the project root:
+```bash
+./lovekit <command> <name>
+```
+
+## Create a Scene
+```bash
+./lovekit create-scene title
+```
+Creates:
+```bash
+game/scenes/title.lua
+```
+
+## Create an Entity
+```bash
+./lovekit create-entity player
+```
+Creates:
+```bash
+game/entities/player.lua
+```
+
+## Naming convention
+It is recommended to use lowercase names.
+
+For multi-word names, use camelCase:
+```bash
+mainMenu
+enemyBoss
+playerStats
+```
+
+## Notes
+- Run commands from the project root.
+- Existing files may be overwritten.
+- The CLI is optional, but useful for faster workflow.
+
+---
+
+# 📌 General notes
 
 - Use `game/` for your game code  
-- Keep `engine/` untouched  
+- Keep `lovekit/` untouched  
 - Prefer using LöveKit systems over raw LÖVE when possible  
 
 ---
