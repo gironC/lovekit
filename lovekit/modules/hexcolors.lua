@@ -15,7 +15,7 @@ function hexColor(color)
   local b = tonumber(color:sub(5,6), 16) / 255
 
   local a = 1
-  if #color == 8 thengracias
+  if #color == 8 then
     a = tonumber(color:sub(7,8), 16) / 255
   end
 
